@@ -1,0 +1,31 @@
+# Build artifacts
+/target
+**/target
+Cargo.lock.bak
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Test fixtures and models (never commit model weights)
+*.gguf
+models/
+fixtures/*.gguf
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+
+# Internal tooling
+/skills/
+/node_modules/

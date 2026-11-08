@@ -1,0 +1,15 @@
+[package]
+name = "llama-core"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+description = "Shared error types, configuration, data structures and diagnostics for llama.rs"
+
+[dependencies]
+thiserror = "2"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+

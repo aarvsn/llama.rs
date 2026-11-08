@@ -1,0 +1,110 @@
+[package]
+name = "llama"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.85"
+description = "A native Rust LLM inference engine for GGUF models (facade crate)"
+license = "MIT"
+repository = "https://github.com/aarvsn/llama.rs"
+homepage = "https://github.com/aarvsn/llama.rs"
+documentation = "https://docs.rs/llama"
+readme = "README.md"
+keywords = ["llm", "gguf", "inference", "transformer", "quantization"]
+categories = ["science"]
+
+[workspace]
+resolver = "3"
+members = [
+    "crates/llama-core",
+    "crates/llama-gguf",
+    "crates/llama-tensor",
+    "crates/llama-kernels",
+    "crates/llama-tokenizer",
+    "crates/llama-model",
+    "crates/llama-runtime",
+    "crates/llama-sampling",
+    "crates/llama-cli",
+    "crates/llama-server",
+    "crates/llama-fixtures",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.85"
+license = "MIT"
+repository = "https://github.com/aarvsn/llama.rs"
+homepage = "https://github.com/aarvsn/llama.rs"
+
+[workspace.lints.rust]
+unsafe_code = "warn"
+
+[workspace.lints.clippy]
+# Keep the codebase clean but do not fight the linter on style minutiae.
+pedantic = { level = "warn", priority = -1 }
+module_name_repetitions = "allow"
+missing_errors_doc = "allow"
+missing_panics_doc = "allow"
+cast_possible_truncation = "allow"
+cast_precision_loss = "allow"
+cast_sign_loss = "allow"
+cast_possible_wrap = "allow"
+inline_always = "allow"
+too_many_arguments = "allow"
+
+[dependencies]
+llama-core = { path = "crates/llama-core", version = "0.1.0" }
+llama-gguf = { path = "crates/llama-gguf", version = "0.1.0" }
+llama-kernels = { path = "crates/llama-kernels", version = "0.1.0" }
+llama-model = { path = "crates/llama-model", version = "0.1.0" }
+llama-runtime = { path = "crates/llama-runtime", version = "0.1.0" }
+llama-sampling = { path = "crates/llama-sampling", version = "0.1.0" }
+llama-tensor = { path = "crates/llama-tensor", version = "0.1.0" }
+llama-tokenizer = { path = "crates/llama-tokenizer", version = "0.1.0" }
+anyhow = "1"
+
+[dev-dependencies]
+llama-fixtures = { path = "crates/llama-fixtures" }
+llama-gguf = { path = "crates/llama-gguf", version = "0.1.0" }
+llama-kernels = { path = "crates/llama-kernels", version = "0.1.0" }
+llama-model = { path = "crates/llama-model", version = "0.1.0" }
+llama-tokenizer = { path = "crates/llama-tokenizer", version = "0.1.0" }
+criterion = { version = "0.5", default-features = false, features = ["cargo_bench_support"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tempfile = "3"
+
+[[bench]]
+name = "engine"
+path = "benches/engine_bench.rs"
+harness = false
+
+[[test]]
+name = "reference_kernels"
+path = "tests/reference_kernels.rs"
+
+[[test]]
+name = "pipeline"
+path = "tests/pipeline.rs"
+
+[[test]]
+name = "real_model"
+path = "tests/real_model.rs"
+
+[[example]]
+name = "generate"
+path = "examples/generate.rs"
+
+[[example]]
+name = "inspect"
+path = "examples/inspect.rs"
+
+[profile.release]
+opt-level = 3
+lto = "thin"
+codegen-units = 1
+panic = "unwind"
+
+[profile.bench]
+opt-level = 3
+lto = "thin"

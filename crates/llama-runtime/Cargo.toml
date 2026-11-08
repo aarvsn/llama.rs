@@ -1,0 +1,25 @@
+[package]
+name = "llama-runtime"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+description = "Inference orchestration for llama.rs: engine loading, sessions, KV cache reuse and generation"
+
+[dependencies]
+llama-core = { path = "../llama-core", version = "0.1.0" }
+llama-gguf = { path = "../llama-gguf", version = "0.1.0" }
+llama-kernels = { path = "../llama-kernels", version = "0.1.0" }
+llama-model = { path = "../llama-model", version = "0.1.0" }
+llama-sampling = { path = "../llama-sampling", version = "0.1.0" }
+llama-tokenizer = { path = "../llama-tokenizer", version = "0.1.0" }
+rayon = "1"
+tracing = "0.1"
+
+[dev-dependencies]
+tempfile = "3"
+
+[lints]
+workspace = true

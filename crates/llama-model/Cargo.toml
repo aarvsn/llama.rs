@@ -1,0 +1,22 @@
+[package]
+name = "llama-model"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+description = "Model architectures, weight loading and the Llama-family transformer for llama.rs"
+
+[dependencies]
+llama-core = { path = "../llama-core", version = "0.1.0" }
+llama-gguf = { path = "../llama-gguf", version = "0.1.0" }
+llama-kernels = { path = "../llama-kernels", version = "0.1.0" }
+llama-tensor = { path = "../llama-tensor", version = "0.1.0" }
+tracing = "0.1"
+
+[dev-dependencies]
+llama-tokenizer = { path = "../llama-tokenizer", version = "0.1.0" }
+
+[lints]
+workspace = true

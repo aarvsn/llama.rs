@@ -1,0 +1,25 @@
+[package]
+name = "llama-cli"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+description = "Command-line interface for the llama.rs inference engine"
+
+[[bin]]
+name = "llama"
+path = "src/main.rs"
+
+[dependencies]
+llama-core = { path = "../llama-core", version = "0.1.0" }
+llama-gguf = { path = "../llama-gguf", version = "0.1.0" }
+llama-runtime = { path = "../llama-runtime", version = "0.1.0" }
+llama-tokenizer = { path = "../llama-tokenizer", version = "0.1.0" }
+anyhow = "1"
+clap = { version = "4", features = ["derive"] }
+tracing = "0.1"
+
+[lints]
+workspace = true

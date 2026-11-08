@@ -1,0 +1,19 @@
+[package]
+name = "llama-fixtures"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+description = "Synthetic GGUF test-model generators for llama.rs tests and benchmarks (not published)"
+publish = false
+
+[dependencies]
+llama-core = { path = "../llama-core", version = "0.1.0" }
+llama-gguf = { path = "../llama-gguf", version = "0.1.0" }
+llama-kernels = { path = "../llama-kernels", version = "0.1.0" }
+llama-tokenizer = { path = "../llama-tokenizer", version = "0.1.0" }
+
+[lints]
+workspace = true

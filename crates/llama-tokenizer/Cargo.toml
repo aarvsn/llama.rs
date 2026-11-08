@@ -1,0 +1,19 @@
+[package]
+name = "llama-tokenizer"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+description = "GGUF-integrated tokenizers (SentencePiece and byte-level BPE) for llama.rs"
+
+[dependencies]
+llama-core = { path = "../llama-core", version = "0.1.0" }
+llama-gguf = { path = "../llama-gguf", version = "0.1.0" }
+tracing = "0.1"
+
+[dev-dependencies]
+
+[lints]
+workspace = true

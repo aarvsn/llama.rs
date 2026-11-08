@@ -1,0 +1,17 @@
+[package]
+name = "llama-sampling"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+description = "Token sampling strategies for llama.rs: greedy, temperature, top-k, top-p, min-p and penalties"
+
+[dependencies]
+llama-core = { path = "../llama-core", version = "0.1.0" }
+
+[dev-dependencies]
+
+[lints]
+workspace = true

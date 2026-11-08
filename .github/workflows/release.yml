@@ -1,0 +1,117 @@
+name: Release
+
+# Triggered by publishing a GitHub release or pushing a version tag.
+# Ordinary branch pushes never create releases.
+on:
+  release:
+    types: [published]
+  push:
+    tags:
+      - "v*.*.*"
+
+permissions:
+  contents: write
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    name: Build ${{ matrix.target }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+            artifact: llama-linux-x86_64
+            bin: llama
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+            artifact: llama-server-linux-x86_64
+            bin: llama-server
+          - os: ubuntu-24.04-arm
+            target: aarch64-unknown-linux-gnu
+            artifact: llama-linux-aarch64
+            bin: llama
+          - os: macos-latest
+            target: aarch64-apple-darwin
+            artifact: llama-macos-aarch64
+            bin: llama
+          - os: macos-13
+            target: x86_64-apple-darwin
+            artifact: llama-macos-x86_64
+            bin: llama
+          - os: windows-latest
+            target: x86_64-pc-windows-msvc
+            artifact: llama-windows-x86_64
+            bin: llama
+          - os: windows-latest
+            target: x86_64-pc-windows-msvc
+            artifact: llama-server-windows-x86_64
+            bin: llama-server
+
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: ${{ matrix.target }}
+
+      - name: Build
+        run: cargo build --release --target ${{ matrix.target }} -p llama-cli -p llama-server
+
+      - name: Package (unix)
+        if: runner.os != 'Windows'
+        run: |
+          mkdir -p dist
+          cp target/${{ matrix.target }}/release/${{ matrix.bin }} dist/
+          cp README.md LICENSE dist/
+          cd dist && tar czf ${{ matrix.artifact }}.tar.gz *
+
+      - name: Package (windows)
+        if: runner.os == 'Windows'
+        shell: bash
+        run: |
+          mkdir -p dist
+          cp target/${{ matrix.target }}/release/${{ matrix.bin }}.exe dist/
+          cp README.md LICENSE dist/
+          cd dist && 7z a ${{ matrix.artifact }}.zip *
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          path: dist/${{ matrix.artifact }}.*
+
+      - name: Attach to release
+        if: github.event_name == 'release'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/${{ matrix.artifact }}.*
+
+  checksums:
+    name: Release checksums
+    needs: build
+    if: github.event_name == 'release'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+      - name: Generate checksums
+        run: |
+          cd artifacts
+          sha256sum * > SHA256SUMS.txt
+      - name: Attach checksums
+        uses: softprops/action-gh-release@v2
+        with:
+          files: artifacts/SHA256SUMS.txt
