@@ -508,11 +508,12 @@ mod tests {
     use axum::http::{Request, StatusCode};
     use tower::ServiceExt;
 
-    fn test_state() -> Arc<AppState> {
-        let dir = std::env::temp_dir().join("llama-rs-server-tests");
-        std::fs::create_dir_all(&dir).unwrap();
-        let path = dir.join("server-fixture.gguf");
-        if !path.exists() {
+    fn test_fixture_path() -> &'static std::path::Path {
+        static FIXTURE_PATH: std::sync::OnceLock<std::path::PathBuf> = std::sync::OnceLock::new();
+        FIXTURE_PATH.get_or_init(|| {
+            let dir = std::env::temp_dir().join("llama-rs-server-tests");
+            std::fs::create_dir_all(&dir).unwrap();
+            let path = dir.join("server-fixture.gguf");
             llama_fixtures::write_llama_fixture(
                 &path,
                 &llama_fixtures::FixtureSpec {
@@ -521,8 +522,13 @@ mod tests {
                 },
             )
             .unwrap();
-        }
-        let engine = Engine::load(&path).unwrap();
+            path
+        })
+    }
+
+    fn test_state() -> Arc<AppState> {
+        let path = test_fixture_path();
+        let engine = Engine::load(path).unwrap();
         Arc::new(AppState::new(engine))
     }
 
